@@ -49,7 +49,7 @@
     if(_isNeedHandleKeyboard == YES){
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil]; // 监听键盘尺寸的变化
     }
 }
 
@@ -137,6 +137,7 @@
 }
 - (void) handleKeyboardFrameChange:(NSNotification*)notification
 {
+    /* 在这里处理中文键盘的高度变化问题，在第一次弹出键盘之后，键盘上随后会展现中文的智能检测栏，导致键盘的高度会变高，而在UIKeyboardWillShowNotification得到的高度缺不包含这个监测栏的高度，从而输入框位置会被键盘遮挡。所以需要在这里监听键盘尺寸的变化，然后再计算尺寸变化值并修改输入框的位置。*/
     CGRect keyboardFrame = [[[notification userInfo] valueForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     if(_moveValueForKeyboard > 0){ // 需要处理中文键盘的尺寸变化问题
         int valueChange = CGRectGetHeight(keyboardFrame) - _keyboardHeight;
